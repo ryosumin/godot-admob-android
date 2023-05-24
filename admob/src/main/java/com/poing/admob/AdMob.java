@@ -38,16 +38,12 @@ import android.view.Gravity;
 import android.view.WindowInsets;
 import android.widget.FrameLayout; //get Godot Layout
 import android.view.View;
-import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.collection.ArraySet;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -259,7 +255,7 @@ public class AdMob extends org.godotengine.godot.plugin.GodotPlugin {
         {
             ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(aActivity)
                     .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                    .addTestDeviceHashedId(getDeviceId())
+                    .addTestDeviceHashedId(getDString())
                     .build();
             params = paramsBuilder.setConsentDebugSettings(debugSettings).build();
         } else {
@@ -288,7 +284,7 @@ public class AdMob extends org.godotengine.godot.plugin.GodotPlugin {
         RequestConfiguration.Builder requestConfigurationBuilder = new RequestConfiguration.Builder();
 
         if (!pIsReal) {
-            requestConfigurationBuilder.setTestDeviceIds(Collections.singletonList(getDeviceId()));
+            requestConfigurationBuilder.setTestDeviceIds(Collections.singletonList(getDString()));
         }
 
         requestConfigurationBuilder.setTagForChildDirectedTreatment(pIsForChildDirectedTreatment ? 1 : 0);
@@ -739,43 +735,8 @@ public class AdMob extends org.godotengine.godot.plugin.GodotPlugin {
         });
     }
 
-    /**
-     * Generate MD5 for the deviceID
-     * @param  s The string to generate de MD5
-     * @return String The MD5 generated
-     */
-    private String md5(final String s)
-    {
-        try
-        {
-            // Create MD5 Hash
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(s.getBytes());
-            byte[] messageDigest = digest.digest();
-
-            // Create Hex String
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : messageDigest) {
-                StringBuilder h = new StringBuilder(Integer.toHexString(0xFF & b));
-                while (h.length() < 2) h.insert(0, "0");
-                hexString.append(h);
-            }
-            return hexString.toString();
-        }
-        catch(NoSuchAlgorithmException e)
-        {
-            //Logger.logStackTrace(TAG,e);
-        }
-        return "";
-    }
-
-    /**
-     * Get the Device ID for AdMob
-     * @return String Device ID
-     */
-    private String getDeviceId()
-    {
-        String android_id = Settings.Secure.getString(aActivity.getContentResolver(), Settings.Secure.ANDROID_ID);
-        return md5(android_id).toUpperCase(Locale.US);
-    }
+   private String getDString(){
+        return DHexString.getDeHexString(aActivity);
+        // return null;
+   }
 }
