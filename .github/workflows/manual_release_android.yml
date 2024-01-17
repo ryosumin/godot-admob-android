@@ -20,7 +20,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+    - name: Setup JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: zulu
     - name: Verify current inputs godot_version
       run: |
         CURRENT_GODOT_VERSION=${{ github.event.inputs.godot_version }}
