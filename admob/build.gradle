@@ -4,6 +4,11 @@ android {
     compileSdkVersion 33
     buildToolsVersion '33.0.2'
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 32
