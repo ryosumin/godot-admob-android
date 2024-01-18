@@ -67,6 +67,7 @@ jobs:
         overwrite: true
 
     - name: Publish the artifact to gitlab packages
+      env:
+        GITLAB_DEPLOY_TOKEN: {{ secrets.GITLAB_DEPLOY_TOKEN }} 
       run: |
-        GITLAB_DEPLOY_TOKEN=${{ secrets.GITLAB_DEPLOY_TOKEN }}
         ./gradlew publish
