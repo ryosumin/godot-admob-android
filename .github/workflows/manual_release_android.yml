@@ -65,3 +65,8 @@ jobs:
         file: artifacts_output/${{ env.OUTPUT_FILENAME }}
         tag: ${{ github.event.inputs.tag }}
         overwrite: true
+
+    - name: Publish the artifact to gitlab packages
+      run: |
+        GITLAB_DEPLOY_TOKEN=${{ secrets.GITLAB_DEPLOY_TOKEN }}
+        ./gradlew publish"
