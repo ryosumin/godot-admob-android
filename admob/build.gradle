@@ -4,7 +4,7 @@ plugins {
 }
 
 ext {
-    GODOT_LIB_VERSION = System.getenv("GODOT_LIB_VERSION") ?: "4.2.1"
+    GODOT_LIB_VERSION = System.getenv("CURRENT_GODOT_VERSION") ?: "4.2.1"
 }
 
 apply from: 'gradle-mvn-push.gradle'

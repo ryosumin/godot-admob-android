@@ -69,4 +69,4 @@ jobs:
     - name: Publish the artifact to gitlab packages
       run: |
         GITLAB_DEPLOY_TOKEN=${{ secrets.GITLAB_DEPLOY_TOKEN }}
-        ./gradlew publish"
+        ./gradlew publish
