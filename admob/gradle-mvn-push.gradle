@@ -1,0 +1,137 @@
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+
+    ext {
+        VERSION_CODE = 1
+        VERSION_NAME = "1.0.0-SNAPSHOT"
+        GROUP = "com.poing.admob"
+        POM_NAME = "poing-godot-admob"
+        ARTIFACT_ID = "admob"
+        POM_PACKAGING = "aar"
+        POM_DESCRIPTION = "descript"
+
+        POM_URL = "https://github.com/aWhalefall/"
+        POM_SCM_URL = ""
+        POM_SCM_CONNECTION = ""
+        POM_SCM_DEV_CONNECTION = ""
+        POM_LICENCE_NAME = "The Apache Software License, Version 2.0"
+        POM_LICENCE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        POM_LICENCE_DIST = "repo"
+        POM_DEVELOPER_ID = "yangweichao"
+        POM_DEVELOPER_NAME = "yangweichao"
+
+        NEXUS_USERNAME = "Deploy-Token"
+        NEXUS_PASSWORD = System.getenv("GITLAB_DEPLOY_TOKEN")
+        RELEASE_REPOSITORY_URL = "https://s01.oss.sonatype.org/content/groups/staging/"
+        SNAPSHOT_REPOSITORY_URL ="https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    }
+
+    def isReleaseBuild() {
+        return VERSION_NAME.contains("SNAPSHOT") == false
+    }
+
+    def getReleaseRepositoryUrl() {
+        return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+                : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+    }
+
+    def getSnapshotRepositoryUrl() {
+        return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+                : "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+
+    def getRepositoryUsername() {
+        return hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ""
+    }
+
+    def getRepositoryPassword() {
+        return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
+    }
+
+
+    def getVersionName(){
+        return (project.hasProperty('version') && !project.getProperty('version').equals('unspecified'))? project.getProperty('version') : VERSION_NAME
+    }
+
+
+
+    def getRepositoryUrl() {
+        // if (isReleaseBuild()) {
+        //     return getReleaseRepositoryUrl()
+        // } else {
+        //     return getSnapshotRepositoryUrl()
+        // }
+        return "https://gitlab.com/api/v4/projects/10854450/packages/maven"
+    }
+
+    afterEvaluate {
+        publishing {
+            publications {
+                maven(MavenPublication) {
+                    artifact bundleReleaseAar
+                    artifact sourcesJar
+                    groupId = GROUP
+                    artifactId = ARTIFACT_ID
+                    version = getVersionName()
+                    pom.with{
+                        name = POM_NAME
+                        packaging = POM_PACKAGING
+                        description = POM_DESCRIPTION
+                        url = POM_URL
+
+                        licenses {
+                            license {
+                                name = POM_LICENCE_NAME
+                                url = POM_LICENCE_URL
+                                distribution = POM_LICENCE_DIST
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id = POM_DEVELOPER_ID
+                                name = POM_DEVELOPER_NAME
+                            }
+                        }
+
+                        scm {
+                            url = POM_SCM_URL
+                            connection = POM_SCM_CONNECTION
+                            developerConnection = POM_SCM_DEV_CONNECTION
+                        }
+
+                    }
+                }
+            }
+            repositories {
+                maven {
+                    url getRepositoryUrl()
+                    credentials(HttpHeaderCredentials){
+                        name  = getRepositoryUsername()
+                        value = getRepositoryPassword()
+                    }
+                    authentication {
+                        header(HttpHeaderAuthentication)
+                    }
+
+                }
+            }
+
+        }
+
+    }
+
+    task sourcesJar(type: Jar) {
+        from android.sourceSets.main.java.getSrcDirs()
+        archiveClassifier='sources'
+    }
+
+
+
+
+//这里的需要配置gpg工具，可以不对artifact进行签名
+    signing {
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("publish") }
+        sign  publishing.publications
+    }
+
