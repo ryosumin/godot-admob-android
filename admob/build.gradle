@@ -37,7 +37,7 @@ android {
 
 dependencies {
     File gdap_file = new File("admob/AdMob.gdap")
-    def match = gdap_file.text =~ /(?<=remote=)[^;]+/
+    def match = gdap_file.text =~ /(?<=remote=)[^]]+]/
 
     def remote_content = Eval.me(match[0])
 
