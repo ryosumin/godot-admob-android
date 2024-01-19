@@ -22,7 +22,7 @@
 
         NEXUS_USERNAME = "Deploy-Token"
         NEXUS_PASSWORD = System.getenv("GITLAB_DEPLOY_TOKEN")
-        RELEASE_REPOSITORY_URL = "https://s01.oss.sonatype.org/content/groups/staging/"
+        RELEASE_REPOSITORY_URL = System.getenv("GITLAB_REPOSITORY_URL") ?: "https://s01.oss.sonatype.org/content/groups/staging/"
         SNAPSHOT_REPOSITORY_URL ="https://s01.oss.sonatype.org/content/repositories/snapshots/"
     }
 
@@ -61,7 +61,7 @@
         // } else {
         //     return getSnapshotRepositoryUrl()
         // }
-        return "https://gitlab.com/api/v4/projects/10854450/packages/maven"
+        return getReleaseRepositoryUrl()
     }
 
     afterEvaluate {
