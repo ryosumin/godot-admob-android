@@ -1,9 +1,12 @@
 [config]
 
 name="AdMob"
-binary_type="local"
-binary="admob-release.aar"
+binary_type="remote"
+binary="com.poing.admob:admob:1.0.0-SNAPSHOT"
 
 [dependencies]
 
 remote=["com.google.android.gms:play-services-ads:22.0.0"]
+custom_maven_repos=[
+  "https://gitlab.com/api/v4/projects/54012823/packages/maven"
+]
