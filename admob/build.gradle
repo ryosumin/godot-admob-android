@@ -14,8 +14,8 @@ android {
     // buildToolsVersion '33.0.2'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     defaultConfig {
@@ -37,15 +37,16 @@ android {
 
 dependencies {
     File gdap_file = new File("admob/AdMob.gdap")
-    def match = gdap_file.text =~ /(?<=remote=)[^]]+]/
+    if (gdap_file.exists()){
+        def match = gdap_file.text =~ /(?<=remote=)[^]]+]/
 
-    def remote_content = Eval.me(match[0])
+        def remote_content = Eval.me(match[0])
 
-    for(item in remote_content){
-        println "implementing $item"
-        implementation item
+        for(item in remote_content){
+            println "implementing $item"
+            implementation item
+        }
     }
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // compileOnly project(':godot-lib')
